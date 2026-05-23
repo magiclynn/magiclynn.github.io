@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfolio — 肉塊/NIKKAI</title>
+<title>Portfolio — [your name]</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400&display=swap" rel="stylesheet">
 <style>
@@ -592,6 +592,79 @@ footer {
   opacity: 0.5;
 }
 
+/* ── LIGHTBOX ── */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(74,63,69,0.88);
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  cursor: pointer;
+}
+
+.lightbox.open { display: flex; animation: lb-in 0.3s ease; }
+
+@keyframes lb-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.lightbox-img {
+  max-width: 90vw;
+  max-height: 88vh;
+  object-fit: contain;
+  border-radius: 2px;
+  cursor: default;
+  animation: lb-img-in 0.3s ease;
+}
+
+@keyframes lb-img-in {
+  from { transform: scale(0.96); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.lightbox-info {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: rgba(255,255,255,0.75);
+  pointer-events: none;
+}
+
+.lightbox-title {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
+}
+
+.lightbox-cat {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  font-size: 1.4rem;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.lightbox-close:hover { color: #fff; }
+
+.work-item { cursor: pointer; }
+
 /* ── FADE IN ── */
 .fade-in {
   opacity: 0;
@@ -652,7 +725,7 @@ footer {
   <div class="hero-left">
     <p class="hero-eyebrow fade-in">Illustrator</p>
     <h1 class="hero-name fade-in">
-      肉塊<br><em>NIKKAI</em>
+      [your<br><em>name]</em>
     </h1>
     <p class="hero-tagline fade-in">
       色鉛筆・水彩で、<br>やわらかな夢の縁を漂うイラストを描いています。
@@ -683,7 +756,7 @@ footer {
     <div class="about-text fade-in">
       <p>
         <!-- ↓自分の言葉に書き換えてください -->
-        色鉛筆とアクリル絵具を主に使用し、やわらかい色彩の中に毒や憂いを忍ばせた女の子のイラストを描いています。夢の中を漂うような、曖昧でふわっとした質感と、くすみピンクや水色を中心とした落ち着いたパレットが特徴です。
+        色鉛筆を主に使用し、<strong>やわらかい色彩の中に毒や憂いを忍ばせた</strong>女の子のイラストを描いています。夢の中を漂うような、曖昧でふわっとした質感と、くすみピンクや水色を中心とした落ち着いたパレットが特徴です。
       </p>
       <p>
         ブライダルシーンのような<strong>晴れやかで幸福な情景</strong>から、日常の中に潜む非日常まで、同じ「やわらかさ」の中で幅広く描いています。
@@ -834,6 +907,16 @@ footer {
   </div>
 </section>
 
+<!-- ── LIGHTBOX ── -->
+<div class="lightbox" id="lightbox">
+  <span class="lightbox-close" id="lb-close">✕</span>
+  <img class="lightbox-img" id="lb-img" src="" alt="">
+  <div class="lightbox-info">
+    <p class="lightbox-title" id="lb-title"></p>
+    <p class="lightbox-cat" id="lb-cat"></p>
+  </div>
+</div>
+
 </main>
 
 <footer>
@@ -849,7 +932,34 @@ const observer = new IntersectionObserver(
 );
 document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-document.querySelectorAll('.filter-btn').forEach(btn => {
+const lb = document.getElementById('lightbox');
+const lbImg = document.getElementById('lb-img');
+const lbTitle = document.getElementById('lb-title');
+const lbCat = document.getElementById('lb-cat');
+
+document.querySelectorAll('.work-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const img = item.querySelector('img');
+    if (!img) return;
+    lbImg.src = img.src;
+    lbImg.alt = img.alt;
+    lbTitle.textContent = item.querySelector('.work-title')?.textContent || '';
+    lbCat.textContent = item.querySelector('.work-cat')?.textContent || '';
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+});
+
+document.getElementById('lb-close').addEventListener('click', closeLb);
+lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
+
+function closeLb() {
+  lb.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+
   btn.addEventListener('click', () => {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
