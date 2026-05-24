@@ -735,7 +735,7 @@ footer {
   <div class="hero-right fade-in">
     <div class="hero-frame">
       <div class="hero-frame-inner">
-  <img src="work1.jpg" alt="featured illustration">
+  <img id="hero-slide" src="work1.jpg" alt="featured illustration">
 </div>
       <span class="hero-caption">selected work</span>
     </div>
@@ -970,6 +970,19 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     });
   });
 });
+  const slides = ['work1.jpg', 'work2.jpg', 'work3.jpg', 'work4.jpg'];
+let currentSlide = 0;
+const heroSlide = document.getElementById('hero-slide');
+
+setInterval(() => {
+  currentSlide = (currentSlide + 1) % slides.length;
+  heroSlide.style.opacity = '0';
+  heroSlide.style.transition = 'opacity 0.8s ease';
+  setTimeout(() => {
+    heroSlide.src = slides[currentSlide];
+    heroSlide.style.opacity = '1';
+  }, 800);
+}, 3000);
 </script>
 
 </body>
